@@ -11,13 +11,13 @@ namespace FakeBlog.Models
         [Key]
         public int PublishedPostId { get; set; }
 
-        [MaxLength(60)]
+        [MinLength(3)]
+        [Required]
         public string Title { get; set; }
-
         public string Contents { get; set; }
-
-        public DateTime PublishedDate { get; set; }
-
-        public Draft DraftRef { get; set; }
+        public DateTime PublishedDate { get; set; } // notNull by default
+        public DateTime CreatedDate { get; set; }
+        public bool IsDraft { get; set; }
+        public string URL { get; set; }
     }
 }

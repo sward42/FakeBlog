@@ -20,10 +20,6 @@ namespace FakeBlog.Models
         [MaxLength(60)]
         public string Email { get; set; }
 
-        public ApplicationUser BaseUser { get; set; }
-
-        public List<Draft> Drafts { get; set; }
-
         public List<PublishedPost> PublishedPosts { get; set; }
     }
 }
