@@ -18,5 +18,7 @@ namespace FakeBlog.Models
 
         public DateTime DraftDate { get; set; }
 
+        public Draft PostRef { get; set; }
+
     }
 }
