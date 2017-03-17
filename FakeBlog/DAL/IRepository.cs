@@ -19,8 +19,8 @@ namespace FakeBlog.DAL
         bool EditPost(int postId, string newContents);
 
         List<Draft> ReturnDrafts(string authorId);
-        Draft ReturnSingleDraft(string authorId, int draftId);
+        Draft ReturnSingleDraft( int draftId);
         List<PublishedPost> ReturnPosts(string authorId);
-        PublishedPost ReturnSinglePost(string authorId, string postTitle);
+        PublishedPost ReturnSinglePost( int postId);
     }
 }

@@ -20,7 +20,7 @@ namespace FakeBlog.Models
 
         public Draft DraftRef { get; set; }
 
-        public Author PostAuthor { get; set; }
+        public ApplicationUser PostAuthor { get; set; }
 
     }
 }
