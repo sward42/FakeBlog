@@ -76,7 +76,7 @@ namespace FakeBlog.DAL
             PublishedPost found_post = ReturnSinglePost(postId);
             if (found_post != null)
             {
-                CreateDraft(found_post.Title, newContents, found_post.PostAuthor);
+                AddPost(found_post.Title, newContents, found_post.PostAuthor);
                 return true;
             }
             return false;
