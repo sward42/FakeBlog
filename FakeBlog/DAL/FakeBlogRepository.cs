@@ -65,7 +65,8 @@ namespace FakeBlog.DAL
             Draft found_draft = ReturnSingleDraft(draftId);
             if (found_draft != null)
             {
-                CreateDraft(found_draft.DraftTitle, newContents, found_draft.DraftAuthor);
+                found_draft.DraftContents = newContents;
+                Context.SaveChanges();
                 return true;
             }
             return false;
@@ -76,7 +77,8 @@ namespace FakeBlog.DAL
             PublishedPost found_post = ReturnSinglePost(postId);
             if (found_post != null)
             {
-                AddPost(found_post.Title, newContents, found_post.PostAuthor);
+                found_post.Contents = newContents;
+                Context.SaveChanges();
                 return true;
             }
             return false;

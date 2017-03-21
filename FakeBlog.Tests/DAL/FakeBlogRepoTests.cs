@@ -27,8 +27,10 @@ namespace FakeBlog.Tests.DAL
         public void Setup()
         {
             fake_post_table = new List<PublishedPost>();
+            fake_draft_table = new List<Draft>();
             fakeContext = new Mock<FakeBlogContext>();
             mockPostSet = new Mock<DbSet<PublishedPost>>();
+            mockDraftSet = new Mock<DbSet<Draft>>();
             repo = new FakeBlogRepository(fakeContext.Object);
 
             john = new ApplicationUser { Id = "john-id-1" };
@@ -157,7 +159,17 @@ namespace FakeBlog.Tests.DAL
         [TestMethod]
         public void EnsureICanEditDraft()
         {
+            fake_draft_table.Add(new Draft { DraftId = 1, DraftTitle = "One", DraftContents = "blah", DraftAuthor = sammy });
+            CreateFakeDraftDatabase();
 
+            repo.EditDraft(1, "blah, blah, blah");
+
+            string expectedResult = "blah, blah, blah";
+            var updatedDraft = repo.ReturnSingleDraft(1);
+            string actualResult = updatedDraft.DraftContents;
+
+            Assert.AreEqual(expectedResult, actualResult);
+            fakeContext.Verify(c => c.SaveChanges(), Times.Once());
         }
 
         [TestMethod]
@@ -171,6 +183,74 @@ namespace FakeBlog.Tests.DAL
             string expectedResult = "blah, blah, blah";
             var updatedPost = repo.ReturnSinglePost(1);
             string actualResult = updatedPost.Contents;
+
+            Assert.AreEqual(expectedResult, actualResult);
+            fakeContext.Verify(c => c.SaveChanges(), Times.Once());
+        }
+
+        [TestMethod]
+        public void EnsureICanReturnASingleDraft()
+        {
+            fake_draft_table.Add(new Draft { DraftId = 1, DraftTitle = "One", DraftContents = "blah", DraftAuthor = sammy });
+            CreateFakeDraftDatabase();
+
+            string expectedDraftTitle = "One";
+            string actualDraftTitle = repo.ReturnSingleDraft(1).DraftTitle;
+
+            Assert.AreEqual(expectedDraftTitle, actualDraftTitle);
+        }
+
+        [TestMethod]
+        public void EnsureICanReturnASinglePost()
+        {
+            fake_post_table.Add(new PublishedPost { PublishedPostId = 1, Title = "One", Contents = "blah", PostAuthor = sammy });
+            CreateFakePostDatabase();
+
+            string expectedPostTitle = "One";
+            string actualPostTitle = repo.ReturnSinglePost(1).Title;
+
+            Assert.AreEqual(expectedPostTitle, actualPostTitle);
+        }
+
+        [TestMethod]
+        public void EnsureICanReturnUserDrafts()
+        {
+            fake_draft_table.Add(new Draft { DraftId = 1, DraftTitle = "One", DraftContents = "blah", DraftAuthor = sammy });
+            fake_draft_table.Add(new Draft { DraftId = 2, DraftTitle = "Two", DraftContents = "blah, blah", DraftAuthor = sammy });
+            fake_draft_table.Add(new Draft { DraftId = 3, DraftTitle = "Three", DraftContents = "blah, blah, blah", DraftAuthor = john });
+            CreateFakeDraftDatabase();
+
+            int expectedResult = 2;
+            int actualResult = repo.ReturnDrafts(sammy.Id).Count();
+
+            Assert.AreEqual(expectedResult, actualResult);
+        }
+
+        [TestMethod]
+        public void EnsureICanReturnUserPosts()
+        {
+            fake_post_table.Add(new PublishedPost { PublishedPostId = 1, Title = "One", Contents = "blah", PostAuthor = sammy });
+            fake_post_table.Add(new  PublishedPost { PublishedPostId = 2, Title = "Two", Contents = "blah, blah", PostAuthor = sammy });
+            fake_post_table.Add(new PublishedPost { PublishedPostId = 3, Title = "Three", Contents = "blah, blah, blah", PostAuthor = john });
+            CreateFakePostDatabase();
+
+            int expectedResult = 2;
+            int actualResult = repo.ReturnPosts(sammy.Id).Count();
+
+            Assert.AreEqual(expectedResult, actualResult);
+        }
+
+        [TestMethod]
+        public void EnsureICanPublishDraft()
+        {
+            fake_draft_table.Add(new Draft { DraftId = 1, DraftTitle = "One", DraftContents = "blah", DraftAuthor = sammy });
+            CreateFakeDraftDatabase();
+            fake_post_table.Add(new PublishedPost { PublishedPostId = 2, Title = "Two", Contents = "blah, blah", PostAuthor = sammy });
+            CreateFakePostDatabase();
+
+            int expectedResult = 2;
+            repo.PublishDraft(1);
+            int actualResult = repo.ReturnPosts(sammy.Id).Count();
 
             Assert.AreEqual(expectedResult, actualResult);
         }
