@@ -13,20 +13,20 @@ namespace FakeBlog.DAL
     public class PostRepository : IPostRepository
     {
 
-        IDbConnection _trelloConnection;
+        IDbConnection _blogConnection;
 
-        public PostRepository(IDbConnection trelloConnection)
+        public PostRepository(IDbConnection blogConnection)
         {
-            _trelloConnection = trelloConnection
+            _blogConnection = blogConnection;
         }
 
         public void AddPost(string title, string contents, ApplicationUser author)
         {
-            _trelloConnection.Open();
+            _blogConnection.Open();
 
             try
             {
-                var AddPostCommand = _trelloConnection.CreateCommand();
+                var AddPostCommand = _blogConnection.CreateCommand();
                 AddPostCommand.CommandText = "Insert into PublishedPosts(Title,Contents,PostAuthor) values (@title, @contents, @authorId)";
                 var titleParameter = new SqlParameter("title", SqlDbType.VarChar);
                 titleParameter.Value = title;
@@ -47,17 +47,17 @@ namespace FakeBlog.DAL
             }
             finally
             {
-                _trelloConnection.Close();
+                _blogConnection.Close();
             }
         }
 
         public bool DeletePost(int postId)
         {
-            _trelloConnection.Open();
+            _blogConnection.Open();
 
             try
             {
-                var deletePostCommand = _trelloConnection.CreateCommand();
+                var deletePostCommand = _blogConnection.CreateCommand();
                 deletePostCommand.CommandText = @"
                 Delete
                 From PublishPosts
@@ -78,7 +78,7 @@ namespace FakeBlog.DAL
             }
             finally
             {
-                _trelloConnection.Close();
+                _blogConnection.Close();
             }
 
             return false;
@@ -86,11 +86,11 @@ namespace FakeBlog.DAL
 
         public bool EditPost(int postId, string newContents)
         {
-            _trelloConnection.Open();
+            _blogConnection.Open();
 
             try
             {
-                var editPostCommand = _trelloConnection.CreateCommand();
+                var editPostCommand = _blogConnection.CreateCommand();
                 editPostCommand.CommandText = @"
                 Update PublishedPosts
                 Set Contents = @contents
@@ -113,18 +113,18 @@ namespace FakeBlog.DAL
             }
             finally
             {
-                _trelloConnection.Close();
+                _blogConnection.Close();
             }
             return false;
         }
 
         public List<PublishedPost> ReturnPosts(string authorId)
         {
-            _trelloConnection.Open();
+            _blogConnection.Open();
 
             try
             {
-                var returnPostsCommand = _trelloConnection.CreateCommand();
+                var returnPostsCommand = _blogConnection.CreateCommand();
                 returnPostsCommand.CommandText = @"
                     Select PublishedPostId, Title, Contents, PublishedDate, PostAuthor
                     From PublishedPosts
@@ -153,7 +153,7 @@ namespace FakeBlog.DAL
             catch (Exception ex) { }
             finally
             {
-                _trelloConnection.Close();
+                _blogConnection.Close();
             }
 
             return new List<PublishedPost>();
@@ -161,11 +161,11 @@ namespace FakeBlog.DAL
 
         public PublishedPost ReturnSinglePost(int postId)
         {
-            _trelloConnection.Open();
+            _blogConnection.Open();
 
             try
             {
-                var returnSinglePostCommand = _trelloConnection.CreateCommand();
+                var returnSinglePostCommand = _blogConnection.CreateCommand();
                 returnSinglePostCommand.CommandText = @"
                     SELECT PublishedPostId, Title, Contents, PublishedDate, PostAuthor 
                     FROM PublishedPosts
@@ -192,7 +192,7 @@ namespace FakeBlog.DAL
             catch (Exception ex) { }
             finally
             {
-                _trelloConnection.Close();
+                _blogConnection.Close();
             }
 
             return null;

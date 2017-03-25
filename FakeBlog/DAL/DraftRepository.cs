@@ -12,20 +12,20 @@ namespace FakeBlog.DAL
 {
     public class DraftRepository : IDraftRepository
     {
-        IDbConnection _trelloConnection;
+        IDbConnection __blogConnection;
 
-        public DraftRepository(IDbConnection trelloConnection)
+        public DraftRepository(IDbConnection blogConnection)
         {
-            _trelloConnection = trelloConnection;
+            __blogConnection = blogConnection;
         }
 
         public void CreateDraft(string title, string contents, ApplicationUser author)
         {
-            _trelloConnection.Open();
+            __blogConnection.Open();
 
             try
             {
-                var CreateDraftCommand = _trelloConnection.CreateCommand();
+                var CreateDraftCommand = __blogConnection.CreateCommand();
                 CreateDraftCommand.CommandText = "Insert into Drafts(DraftTitle,DraftContents,DraftAuthor) values (@title, @contents, @authorId)";
                 var titleParameter = new SqlParameter("title", SqlDbType.VarChar);
                 titleParameter.Value = title;
@@ -46,17 +46,17 @@ namespace FakeBlog.DAL
             }
             finally
             {
-                _trelloConnection.Close();
+                __blogConnection.Close();
             }
         }
 
         public bool DeleteDraft(int draftId)
         {
-            _trelloConnection.Open();
+            __blogConnection.Open();
 
             try
             {
-                var deleteDraftCommand = _trelloConnection.CreateCommand();
+                var deleteDraftCommand = __blogConnection.CreateCommand();
                 deleteDraftCommand.CommandText = @"
                 Delete
                 From Drafts
@@ -77,7 +77,7 @@ namespace FakeBlog.DAL
             }
             finally
             {
-                _trelloConnection.Close();
+                __blogConnection.Close();
             }
 
             return false;
@@ -85,11 +85,11 @@ namespace FakeBlog.DAL
 
         public bool EditDraft(int draftId, string newContents)
         {
-            _trelloConnection.Open();
+            __blogConnection.Open();
 
             try
             {
-                var editDraftCommand = _trelloConnection.CreateCommand();
+                var editDraftCommand = __blogConnection.CreateCommand();
                 editDraftCommand.CommandText = @"
                 Update Drafts
                 Set DraftContents = @contents
@@ -112,7 +112,7 @@ namespace FakeBlog.DAL
             }
             finally
             {
-                _trelloConnection.Close();
+                __blogConnection.Close();
             }
             return false;
         }
@@ -129,11 +129,11 @@ namespace FakeBlog.DAL
 
         public List<Draft> ReturnDrafts(string authorId)
         {
-            _trelloConnection.Open();
+            __blogConnection.Open();
 
             try
             {
-                var returnDraftsCommand = _trelloConnection.CreateCommand();
+                var returnDraftsCommand = __blogConnection.CreateCommand();
                 returnDraftsCommand.CommandText = @"
                     Select DraftId, DraftTitle, DraftContents, DraftDate, DraftAuthor
                     From Drafts
@@ -162,7 +162,7 @@ namespace FakeBlog.DAL
             catch (Exception ex) { }
             finally
             {
-                _trelloConnection.Close();
+                __blogConnection.Close();
             }
 
             return new List<Draft>();
@@ -172,11 +172,11 @@ namespace FakeBlog.DAL
 
         public Draft ReturnSingleDraft( int draftId)
         {
-            _trelloConnection.Open();
+            __blogConnection.Open();
 
             try
             {
-                var returnSingleDraftCommand = _trelloConnection.CreateCommand();
+                var returnSingleDraftCommand = __blogConnection.CreateCommand();
                 returnSingleDraftCommand.CommandText = @"
                     SELECT DraftId, DraftTitle, DraftContents, DraftDate, DraftAuthor 
                     FROM Drafts
@@ -203,7 +203,7 @@ namespace FakeBlog.DAL
             catch (Exception ex) { }
             finally
             {
-                _trelloConnection.Close();
+                __blogConnection.Close();
             }
 
             return null;
